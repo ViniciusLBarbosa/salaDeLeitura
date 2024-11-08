@@ -58,6 +58,10 @@ function EmprestimoLivro() {
         aluno: nomeDoAluno,
         dataEmprestimo: new Date() 
       });
+      const livroRef = doc(db, 'livros', livroId);
+      await updateDoc(livroRef, { 
+        alunoEmprestado: nomeDoAluno 
+      });
     } catch (error) {
       console.error('Erro ao registrar empréstimo:', error);
     }
@@ -90,7 +94,8 @@ function EmprestimoLivro() {
 
       const livroRef = doc(db, 'livros', livroId);
       await updateDoc(livroRef, {
-        emprestado: true
+        emprestado: true,
+        alunoEmprestado: nomeDoAluno,
       });
 
       await registrarEmprestimo(livroId, nomeDoAluno);

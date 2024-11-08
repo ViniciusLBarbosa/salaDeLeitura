@@ -29,6 +29,7 @@ function TabelaLivros() {
           <th>Autor</th>
           <th>Numero Tombo</th>
           <th>Emprestado</th>
+          <th>Aluno</th>
         </tr>
       </thead>
       <tbody>
@@ -38,6 +39,7 @@ function TabelaLivros() {
             <td>{livro.autor}</td>
             <td>{livro.numeroTombo}</td>
             <td>{livro.emprestado ? 'Sim' : 'Não'}</td> 
+            <td>{livro.alunoEmprestado}</td> 
           </tr>
         ))}
       </tbody>
