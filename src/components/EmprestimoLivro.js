@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { doc, updateDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../config/firebase'; 
-import BotaoLogout from './Login/BotaoLogout'; // Ajuste o caminho, se necessário
 
 function EmprestimoLivro() {
   const [nomeDoAluno, setNomeDoAluno] = useState('');
