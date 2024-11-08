@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { doc, updateDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../config/firebase'; 
+import '../styles.css';
 
 function EmprestimoLivro() {
   const [nomeDoAluno, setNomeDoAluno] = useState('');

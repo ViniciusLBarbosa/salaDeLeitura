@@ -1,5 +1,6 @@
 import { useLocation, Link } from 'react-router-dom';
 import BotaoLogout from './Login/BotaoLogout';
+import './Layout.css';
 
 function Layout({ children }) { // Recebe children como prop
   const location = useLocation();
@@ -8,7 +9,7 @@ function Layout({ children }) { // Recebe children como prop
     <div>
       {location.pathname !== '/' && location.pathname !== '/register' && (
         <nav>
-          <ul>
+          <ul className='navigation'>
             <li>
               <Link to="/cadastro">Cadastro de Livros</Link>
             </li>
