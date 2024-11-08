@@ -26,7 +26,7 @@ function Layout({ children }) { // Recebe children como prop
         </nav>
       )}
 
-      {children} {/* Renderiza o conteúdo das rotas filhas */}
+      {children} {/* Mostra o conteúdo das rotas filhas */}
     </div>
   );
 }

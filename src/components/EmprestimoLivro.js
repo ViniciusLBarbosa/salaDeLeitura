@@ -5,6 +5,7 @@ import '../styles.css';
 
 function EmprestimoLivro() {
   const [nomeDoAluno, setNomeDoAluno] = useState('');
+  const [serieDoAluno, setSerieDoAluno] = useState('');
   const [nomeDoLivro, setNomeDoLivro] = useState('');
   const [numeroTombo, setNumeroTombo] = useState('');
 
@@ -50,18 +51,20 @@ function EmprestimoLivro() {
     }
   };
 
-  const registrarEmprestimo = async (livroId, nomeDoAluno) => {
+  const registrarEmprestimo = async (livroId, nomeDoAluno, serieDoAluno) => {
     try {
       const emprestimosCollection = collection(db, 'emprestimos');
       await addDoc(emprestimosCollection, {
         livroId: livroId,
         livroIdNumero: numeroTombo,
         aluno: nomeDoAluno,
+        serie: serieDoAluno,
         dataEmprestimo: new Date() 
       });
       const livroRef = doc(db, 'livros', livroId);
       await updateDoc(livroRef, { 
-        alunoEmprestado: nomeDoAluno 
+        alunoEmprestado: nomeDoAluno,
+        serie: serieDoAluno
       });
     } catch (error) {
       console.error('Erro ao registrar empréstimo:', error);
@@ -96,6 +99,7 @@ function EmprestimoLivro() {
       await updateDoc(livroRef, {
         emprestado: true,
         alunoEmprestado: nomeDoAluno,
+        serie: serieDoAluno
       });
 
       await registrarEmprestimo(livroId, nomeDoAluno);
@@ -103,6 +107,7 @@ function EmprestimoLivro() {
       setNomeDoAluno('');
       setNomeDoLivro('');
       setNumeroTombo('');
+      setSerieDoAluno('');
 
       alert('Livro emprestado com sucesso.');
     } catch (error) {
@@ -122,6 +127,14 @@ function EmprestimoLivro() {
           onChange={(e) => setNomeDoAluno(e.target.value)}
           required
         />
+        <label htmlFor="serieDoAluno">Ano/Série:</label>
+        <input
+          type="text"
+          id="serie"
+          value={serieDoAluno}
+          onChange={(e) => setSerieDoAluno(e.target.value)}
+          required
+        />
         <label htmlFor="nomeDoLivro">Livro:</label>
         <input
           type="text"
@@ -129,7 +142,7 @@ function EmprestimoLivro() {
           value={nomeDoLivro}
           onChange={(e) => setNomeDoLivro(e.target.value)}
         />
-        <label htmlFor="numeroTombo">Numero tombo:</label>
+        <label htmlFor="numeroTombo">Número tombo:</label>
         <input
           type="text"
           id="NumeroTombo"

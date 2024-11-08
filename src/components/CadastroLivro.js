@@ -53,7 +53,7 @@ function CadastroLivro() {
           onChange={(e) => setAutor(e.target.value)}
           required
         />
-        <label htmlFor="numeroTombo">Numero tombo:</label>
+        <label htmlFor="numeroTombo">Número tombo:</label>
         <input
           type="text"
           id="NumeroTombo"

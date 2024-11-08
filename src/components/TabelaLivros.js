@@ -23,10 +23,10 @@ function TabelaLivros() {
     if (window.confirm('Tem certeza que deseja devolver esse livro?')){
       try {
         const livroRef = doc(db, 'livros', id);
-        await updateDoc(livroRef, { emprestado: false, alunoEmprestado: '' });
+        await updateDoc(livroRef, { emprestado: false, alunoEmprestado: '', serie: '' });
 
         setLivros(livros.map(livro => 
-          livro.id === id ? { ...livro, emprestado: false, alunoEmprestado: '' } : livro
+          livro.id === id ? { ...livro, emprestado: false, alunoEmprestado: '', serie: '' } : livro
         ));
       } catch (error) {
         console.error('Erro ao devolver livro:', error);
@@ -56,9 +56,10 @@ function TabelaLivros() {
         <tr>
           <th>Título</th>
           <th>Autor</th>
-          <th>Numero Tombo</th>
+          <th>Número Tombo</th>
           <th>Emprestado</th>
           <th>Aluno</th>
+          <th>Ano/Série</th>
           <th>Ações</th>
         </tr>
       </thead>
@@ -70,6 +71,7 @@ function TabelaLivros() {
             <td>{livro.numeroTombo}</td>
             <td>{livro.emprestado ? 'Sim' : 'Não'}</td> 
             <td>{livro.alunoEmprestado}</td> 
+            <td>{livro.serie}</td> 
             <td>
               {livro.emprestado && ( // Só mostra o botão se o livro estiver emprestado
              <button className='botoes' onClick={() => devolverLivro(livro.id)}>Devolver</button> 
