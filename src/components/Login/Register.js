@@ -79,6 +79,7 @@ function Cadastro() {
         </div>
         <button type="submit">Cadastrar</button>
       </form>
+      <footer>Developed by <a href='https://github.com/ViniciusLBarbosa?tab=repositories'>Vinícius Lima</a> </footer>
     </div>
   );
 }

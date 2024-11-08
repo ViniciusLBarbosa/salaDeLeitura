@@ -38,3 +38,7 @@
     border-radius: 3px;
     cursor: pointer;
   }
+
+  footer {
+    font-size: 12px;
+  }

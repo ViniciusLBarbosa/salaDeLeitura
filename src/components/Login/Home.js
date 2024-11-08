@@ -43,6 +43,7 @@ function Home() {
   return (
     <div className="container">
       <h1>Bem-vindo(a)!</h1>
+      <h2>Sala de Leitura</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email:</label>
@@ -72,7 +73,9 @@ function Home() {
       <p>
       <Link to="/">Esqueceu sua senha?</Link>
       </p>
+      <footer>Developed by <a href='https://github.com/ViniciusLBarbosa?tab=repositories'>Vinícius Lima</a> </footer>
     </div>
+
   );
 }
 
