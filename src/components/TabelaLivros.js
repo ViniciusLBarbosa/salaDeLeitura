@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import '../styles.css';
 
@@ -7,6 +7,32 @@ import '../styles.css';
 
 function TabelaLivros() {
   const [livros, setLivros] = useState([]);
+
+  const deletarLivro = async (id) => {
+    if (window.confirm('Tem certeza que deseja deletar esse livro?')) { 
+      try {
+        await deleteDoc(doc(db, 'livros', id));
+        setLivros(livros.filter(livro => livro.id !== id)); 
+      } catch (error) {
+        console.error('Erro ao deletar livro:', error);
+      }
+    }
+  };
+
+  const devolverLivro = async (id) => {
+    if (window.confirm('Tem certeza que deseja devolver esse livro?')){
+      try {
+        const livroRef = doc(db, 'livros', id);
+        await updateDoc(livroRef, { emprestado: false, alunoEmprestado: '' });
+
+        setLivros(livros.map(livro => 
+          livro.id === id ? { ...livro, emprestado: false, alunoEmprestado: '' } : livro
+        ));
+      } catch (error) {
+        console.error('Erro ao devolver livro:', error);
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchLivros = async () => {
@@ -19,6 +45,7 @@ function TabelaLivros() {
         console.error('Erro ao buscar livros:', error);
       }
     };
+    
 
     fetchLivros();
   }, []);
@@ -32,6 +59,7 @@ function TabelaLivros() {
           <th>Numero Tombo</th>
           <th>Emprestado</th>
           <th>Aluno</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -42,6 +70,12 @@ function TabelaLivros() {
             <td>{livro.numeroTombo}</td>
             <td>{livro.emprestado ? 'Sim' : 'Não'}</td> 
             <td>{livro.alunoEmprestado}</td> 
+            <td>
+              {livro.emprestado && ( // Só mostra o botão se o livro estiver emprestado
+             <button className='botoes' onClick={() => devolverLivro(livro.id)}>Devolver</button> 
+              )}
+             <button className='botoes' onClick={() => deletarLivro(livro.id)}>Remover</button>
+          </td>
           </tr>
         ))}
       </tbody>

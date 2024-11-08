@@ -63,3 +63,8 @@
   th {
     background-color: var(--vermelho-claro);
   }
+
+
+.botoes {
+  margin: 2px;
+}
