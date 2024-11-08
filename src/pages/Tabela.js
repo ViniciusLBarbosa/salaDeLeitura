@@ -5,7 +5,7 @@ import TabelaLivros from '../components/TabelaLivros';
 function tabela() {
   return (
     <div>
-      <h1>Tabela de Livros</h1>
+      <h1>Lista de Livros</h1>
       <TabelaLivros />
     </div>
   );

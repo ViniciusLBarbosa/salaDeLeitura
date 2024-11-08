@@ -3,6 +3,8 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import './styles2.css';
 
+
+
 function TabelaLivros() {
   const [livros, setLivros] = useState([]);
 

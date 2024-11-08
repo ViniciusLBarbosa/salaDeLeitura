@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { doc, updateDoc, collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../config/firebase'; 
+import BotaoLogout from './Login/BotaoLogout'; // Ajuste o caminho, se necessário
 
 function EmprestimoLivro() {
   const [nomeDoAluno, setNomeDoAluno] = useState('');
@@ -9,7 +10,7 @@ function EmprestimoLivro() {
 
   const buscarLivroIdPorNome = async (nomeDoLivro) => {
     if (!nomeDoLivro) {
-      return null; // Retorna null se  o nome não for fornecido
+      return null;
     }
 
     try {
@@ -30,7 +31,7 @@ function EmprestimoLivro() {
 
   const buscarLivroIdPorNumero = async (numeroTombo) => {
     if (!numeroTombo) {
-      return null; // Retorna null se o numero tombo não for fornecido
+      return null;
     }
 
     try {
@@ -76,7 +77,6 @@ function EmprestimoLivro() {
 
       let livroId = null;
       if (livroIdNome && livroIdNumero) {
-        // Se encontrar os dois, verifica se são o mesmo livro.
         if (livroIdNome === livroIdNumero) {
           livroId = livroIdNome;
         } else {

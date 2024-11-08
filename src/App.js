@@ -1,34 +1,24 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './components/Login/Home';
+import Register from './components/Login/Register';
 import Cadastro from './pages/Cadastro';
 import Emprestimo from './pages/Emprestimo';
-import './styles.css'
+import './App.css';
 import TabelaEmprestimo from './pages/Tabela';
+import Layout from './components/Layout';
 
 function App() {
   return (
     <BrowserRouter>
-      <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/cadastro">Cadastro de Livros</Link>
-            </li>
-            <li>
-              <Link to="/emprestimo">Empréstimo de Livros</Link>
-            </li>
-            <li>
-              <Link to="/tabela">Tabela de Livros</Link>
-            </li>
-          </ul>
-        </nav>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/Register" element={<Register />} />
 
-        <Routes>
-          <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/emprestimo" element={<Emprestimo />} />
-          <Route path="/tabela" element={<TabelaEmprestimo />} />
-        </Routes>
-      </div>
+        <Route path="/cadastro" element={<Layout><Cadastro /></Layout>} /> {/* Envolve cada rota com Layout */}
+        <Route path="/emprestimo" element={<Layout><Emprestimo /></Layout>} />
+        <Route path="/tabela" element={<Layout><TabelaEmprestimo /></Layout>} />
+      </Routes>
     </BrowserRouter>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../config/firebase'; // Importe a instância do Firestore
+import { db } from '../config/firebase';
+
 
 function CadastroLivro() {
   const [titulo, setTitulo] = useState('');
@@ -29,7 +30,10 @@ function CadastroLivro() {
     }
   };
 
+  
+
   return (
+    
     <form onSubmit={handleSubmit}>
       <div>
         <label htmlFor="titulo">Título:</label>
@@ -57,6 +61,7 @@ function CadastroLivro() {
           required
         />
       </div>
+      
       <button type="submit">Cadastrar</button>
     </form>
   );
