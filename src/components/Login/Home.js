@@ -68,9 +68,6 @@ function Home() {
         <button type="submit">Entrar</button>
       </form>
       <p>
-        Não tem uma conta? <Link to="/Register">Cadastre-se</Link>
-      </p>
-      <p>
       <Link to="/">Esqueceu sua senha?</Link>
       </p>
       <footer>Developed by <a href='https://github.com/ViniciusLBarbosa?tab=repositories'>Vinícius Lima</a> </footer>
