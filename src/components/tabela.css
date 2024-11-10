@@ -1,0 +1,39 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 20px 20px 20px; /* Espaçamento externo */
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #f2dede; /* Vermelho claro para o cabeçalho */
+    color: #a94442; /* Vermelho escuro para o texto do cabeçalho */
+    font-weight: bold;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f2f2; /* Vermelho muito claro para linhas pares */
+  }
+  
+  tr:hover {
+    background-color: #e6b0aa; /* Vermelho médio para efeito hover */
+  }
+  
+  .botoes {
+    background-color: #a94442; /* Vermelho escuro para botões */
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px; /* Espaçamento entre botões */
+  }
+  
+  .botoes:hover {
+    background-color: #800000; /* Vermelho mais escuro para hover nos botões */
+  }

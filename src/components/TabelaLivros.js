@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc, updateDoc, arrayRemove, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import '../styles.css';
+import './tabela.css'
 
 function TabelaLivros() {
   const [livros, setLivros] = useState([]);
