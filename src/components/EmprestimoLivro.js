@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { doc, updateDoc, collection, query, where, getDocs, addDoc, arrayUnion, getDoc } from 'firebase/firestore';
-import { db } from '../config/firebase'; 
+import { db } from '../config/firebase';
 import '../styles.css';
 
 function EmprestimoLivro() {
@@ -10,7 +10,7 @@ function EmprestimoLivro() {
   const [numeroTombo, setNumeroTombo] = useState('');
   const [alunos, setAlunos] = useState([]);
 
-  const buscarAlunos = async () => { 
+  const buscarAlunos = async () => {
     try {
       const alunosCollection = collection(db, 'alunos');
       const alunosSnapshot = await getDocs(alunosCollection);
@@ -22,8 +22,8 @@ function EmprestimoLivro() {
   };
 
   useEffect(() => {
-    buscarAlunos(); 
-  }, []); 
+    buscarAlunos();
+  }, []);
 
   const buscarLivroIdPorNome = async (nomeDoLivro) => {
     if (!nomeDoLivro) {
@@ -38,7 +38,7 @@ function EmprestimoLivro() {
       if (querySnapshot.docs.length > 0) {
         return querySnapshot.docs[0].id;
       } else {
-        return null; 
+        return null;
       }
     } catch (error) {
       console.error('Erro ao buscar livro:', error);
@@ -59,7 +59,7 @@ function EmprestimoLivro() {
       if (querySnapshot.docs.length > 0) {
         return querySnapshot.docs[0].id;
       } else {
-        return null; 
+        return null;
       }
     } catch (error) {
       console.error('Erro ao buscar livro:', error);
@@ -76,7 +76,10 @@ function EmprestimoLivro() {
         console.log("Livro emprestado:", livroDoc.data().emprestado);
         if (livroDoc.data().emprestado) {
           alert('Este livro já está emprestado.');
-          return; 
+          return true;
+        }
+        else{
+          alert('Livro emprestado com sucesso.');
         }
 
         const dataEmprestimo = new Date();
@@ -87,12 +90,12 @@ function EmprestimoLivro() {
         await addDoc(emprestimosCollection, {
           livroId: livroId,
           livroIdNumero: numeroTombo,
-          alunoId: alunoId, 
+          alunoId: alunoId,
           dataEmprestimo: dataEmprestimo,
           dataDevolucao: dataDevolucao
         });
 
-        await updateDoc(livroRef, { 
+        await updateDoc(livroRef, {
           emprestado: true,
           alunoEmprestado: alunoId,
           serie: serieDoAluno
@@ -106,6 +109,7 @@ function EmprestimoLivro() {
       } else {
         console.error('Documento do livro não encontrado.');
       }
+      return;
     } catch (error) {
       console.error('Erro ao registrar empréstimo:', error);
     }
@@ -138,15 +142,16 @@ function EmprestimoLivro() {
       const aluno = alunos.find(a => a.nome === nomeDoAluno);
 
       if (aluno) {
-        await registrarEmprestimo(livroId, aluno.id); 
+        await registrarEmprestimo(livroId, aluno.id);
       } else {
         try {
           const novoAlunoRef = await addDoc(collection(db, 'alunos'), {
             nome: nomeDoAluno,
             serie: serieDoAluno,
-            livrosEmprestados: [] 
+            livrosEmprestados: []
           });
           await registrarEmprestimo(livroId, novoAlunoRef.id);
+
         } catch (error) {
           console.error('Erro ao cadastrar aluno:', error);
           alert('Erro ao cadastrar aluno.');
@@ -159,7 +164,7 @@ function EmprestimoLivro() {
       setNumeroTombo('');
       setSerieDoAluno('');
 
-      alert('Livro emprestado com sucesso.');
+
       buscarAlunos();
     } catch (error) {
       console.error('Erro ao emprestar livro:', error);
@@ -173,8 +178,8 @@ function EmprestimoLivro() {
       setNomeDoAluno(alunoSelecionado.nome);
       setSerieDoAluno(alunoSelecionado.serie);
     } else {
-      setNomeDoAluno(event.target.value); 
-      setSerieDoAluno(''); 
+      setNomeDoAluno(event.target.value);
+      setSerieDoAluno('');
     }
   };
 
@@ -186,8 +191,8 @@ function EmprestimoLivro() {
           type="text"
           id="nomeDoAluno"
           value={nomeDoAluno}
-          onChange={handleAlunoChange} 
-          list="alunos-list" 
+          onChange={handleAlunoChange}
+          list="alunos-list"
           required
         />
         <datalist id="alunos-list">
@@ -203,7 +208,7 @@ function EmprestimoLivro() {
           value={serieDoAluno}
           onChange={(e) => setSerieDoAluno(e.target.value)}
           required
-          readOnly 
+          readOnly
         />
         <label htmlFor="nomeDoLivro">Livro:</label>
         <input
