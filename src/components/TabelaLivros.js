@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, updateDoc, arrayRemove, getDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import '../styles.css';
 
 function TabelaLivros() {
   const [livros, setLivros] = useState([]);
   const [ordenacao, setOrdenacao] = useState({ campo: 'titulo', direcao: 'asc' });
+  const [alunos, setAlunos] = useState([]);
 
   const deletarLivro = async (id) => {
     if (window.confirm('Tem certeza que deseja deletar esse livro?')) {
@@ -22,11 +23,29 @@ function TabelaLivros() {
     if (window.confirm('Tem certeza que deseja devolver esse livro?')) {
       try {
         const livroRef = doc(db, 'livros', id);
-        await updateDoc(livroRef, { emprestado: false, alunoEmprestado: '', serie: '' });
+        const livroDoc = await getDoc(livroRef); // Busca o documento do livro
 
-        setLivros(livros.map(livro =>
-          livro.id === id ? { ...livro, emprestado: false, alunoEmprestado: '', serie: '' } : livro
-        ));
+        // Verifica se o documento do livro existe
+        if (livroDoc.exists()) {
+          const alunoId = livroDoc.data().alunoEmprestado; // Obtém o ID do aluno
+          console.log("ID do aluno:", alunoId);
+
+          // Atualiza o documento do livro
+          await updateDoc(livroRef, { emprestado: false, alunoEmprestado: '', serie: '' });
+
+          // Remove o livro da lista de livrosEmprestados do aluno
+          const alunoRef = doc(db, 'alunos', alunoId);
+          await updateDoc(alunoRef, { 
+            livrosEmprestados: arrayRemove(id) 
+          });
+
+          setLivros(livros.map(livro =>
+            livro.id === id ? { ...livro, emprestado: false, alunoEmprestado: '', serie: '' } : livro
+          ));
+        } else {
+          console.error('Documento do livro não encontrado.');
+        }
+
       } catch (error) {
         console.error('Erro ao devolver livro:', error);
       }
@@ -44,8 +63,20 @@ function TabelaLivros() {
         console.error('Erro ao buscar livros:', error);
       }
     };
+   
+    const fetchAlunos = async () => { // Função para buscar alunos
+      try {
+        const alunosCollection = collection(db, 'alunos');
+        const alunosSnapshot = await getDocs(alunosCollection);
+        const alunosList = alunosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setAlunos(alunosList);
+      } catch (error) {
+        console.error('Erro ao buscar alunos:', error);
+      }
+    };
 
     fetchLivros();
+    fetchAlunos(); // Chama a função para buscar alunos
   }, []);
 
   const ordenarLivros = (campo) => {
@@ -85,7 +116,11 @@ function TabelaLivros() {
             <td>{livro.autor}</td>
             <td>{livro.numeroTombo}</td>
             <td>{livro.emprestado ? 'Sim' : 'Não'}</td>
-            <td>{livro.alunoEmprestado}</td>
+            <td>
+              {livro.emprestado // Exibe o nome do aluno, se encontrado
+                ? alunos.find(aluno => aluno.id === livro.alunoEmprestado)?.nome || "Aluno não encontrado" 
+                : ""}
+            </td>
             <td>{livro.serie}</td>
             <td>
               {livro.emprestado && (
