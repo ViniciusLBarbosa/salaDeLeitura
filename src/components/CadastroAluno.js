@@ -33,7 +33,7 @@ function CadastroAluno() {
     
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="aluno">Auno:</label>
+        <label htmlFor="aluno">Aluno:</label>
         <input
           type="text"
           id="aluno"
