@@ -63,3 +63,23 @@ th, td {
 th {
   background-color: var(--vermelho-claro);
 }
+
+/* Media Queries para telas menores (celulares) */
+@media (max-width: 768px) {
+  form {
+    padding: 10px; /* Reduz o padding do formulário */
+  }
+
+  table {
+    font-size: 14px; /* Diminui o tamanho da fonte da tabela */
+  }
+
+  th, td {
+    padding: 6px; /* Reduz o padding das células da tabela */
+  }
+
+  input[type="text"],
+  input[type="date"] {
+    font-size: 16px; /* Aumenta o tamanho da fonte dos inputs */
+  }
+}

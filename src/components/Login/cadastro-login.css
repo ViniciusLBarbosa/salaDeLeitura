@@ -1,43 +1,63 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-    text-align: center;
-  }
-  
-  form {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-  }
-  
-  label {
-    margin-bottom: 5px;
-  }
-  
-  input {
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-  }
-  
-  button {
-    padding: 10px;
-    background-color: #e63946; /* Vermelho claro */
-    color: #fff;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+input {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+button {
+  padding: 10px;
+  background-color: #e63946; /* Vermelho claro */
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+footer {
+  font-size: 12px;
+}
+
+/* Media Queries para telas menores (celulares) */
+@media (max-width: 768px) {
+  .container {
+    height: auto; /* Remove a altura fixa para evitar problemas de rolagem */
+    padding: 20px; /* Adiciona padding para evitar que o conteúdo encoste nas bordas */
   }
 
-  footer {
-    font-size: 12px;
+  form {
+    width: 90%; /* Ajusta a largura do formulário para ocupar a maior parte da tela */
   }
+
+  input {
+    font-size: 16px; /* Aumenta o tamanho da fonte dos inputs */
+  }
+
+  button {
+    font-size: 16px; /* Aumenta o tamanho da fonte do botão */
+  }
+}
