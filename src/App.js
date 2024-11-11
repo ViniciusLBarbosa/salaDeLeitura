@@ -9,21 +9,46 @@ import './App.css';
 import TabelaEmprestimo from './pages/Tabela';
 import Layout from './components/Layout';
 import ListaDeAluno from './pages/Lista';
+import PrivateRoute from './components/PrivateRoute'; // Importe o PrivateRoute
+import { AuthProvider } from './components/AuthContext'; // Importe o AuthProvider
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/Register" element={<Register />} />
+    <AuthProvider> {/* Envolve o aplicativo com AuthProvider */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/Register" element={<Register />} />
 
-        <Route path="/alunos" element={<Layout><Alunos /></Layout>} />
-        <Route path="/lista" element={<Layout><ListaDeAluno /></Layout>} />
-        <Route path="/cadastro" element={<Layout><Cadastro /></Layout>} /> {/* Envolve cada rota com Layout */}
-        <Route path="/emprestimo" element={<Layout><Emprestimo /></Layout>} />
-        <Route path="/tabela" element={<Layout><TabelaEmprestimo /></Layout>} />
-      </Routes>
-    </BrowserRouter>
+          {/* Protege as rotas com PrivateRoute */}
+          <Route path="/alunos" element={
+            <PrivateRoute>
+              <Layout><Alunos /></Layout>
+            </PrivateRoute>
+          } />
+          <Route path="/lista" element={
+            <PrivateRoute>
+              <Layout><ListaDeAluno /></Layout>
+            </PrivateRoute>
+          } />
+          <Route path="/cadastro" element={
+            <PrivateRoute>
+              <Layout><Cadastro /></Layout>
+            </PrivateRoute>
+          } /> 
+          <Route path="/emprestimo" element={
+            <PrivateRoute>
+              <Layout><Emprestimo /></Layout>
+            </PrivateRoute>
+          } />
+          <Route path="/tabela" element={
+            <PrivateRoute>
+              <Layout><TabelaEmprestimo /></Layout>
+            </PrivateRoute>
+          } />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

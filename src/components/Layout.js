@@ -32,7 +32,7 @@ function Layout({ children }) { // Recebe children como prop
         </nav>
       )}
 
-      {children} {/* Mostra o conteúdo das rotas filhas */}
+      {children} {/* Mostra o conteúdo das rotas */}
     </div>
   );
 }
