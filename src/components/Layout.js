@@ -11,6 +11,9 @@ function Layout({ children }) { // Recebe children como prop
         <nav>
           <ul className='navigation'>
             <li>
+              <Link to="/home">Home</Link>
+            </li>
+            <li>
               <Link to="/alunos">Cadastro de Alunos</Link>
             </li>
             <li>

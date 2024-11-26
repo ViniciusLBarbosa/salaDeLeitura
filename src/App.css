@@ -75,3 +75,10 @@ button[type="submit"] {
   border: none;
   cursor: pointer;
 }
+
+h3 {
+  text-align: center; /* Centraliza o texto horizontalmente */
+  margin-left: auto;  /* Define a margem esquerda como automática */
+  margin-right: auto; /* Define a margem direita como automática   
+ */
+}

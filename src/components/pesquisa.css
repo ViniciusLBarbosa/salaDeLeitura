@@ -1,0 +1,40 @@
+/* Estilos para o container da pesquisa */
+.pesquisa-container {
+    display: block;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-left: 20px;
+    justify-content: center;
+  }
+  
+  /* Estilos para a caixa de pesquisa */
+  .pesquisa-container input[type="text"] {
+    padding: 8px;
+    border: 1px solid #d9534f;
+    border-radius: 4px;
+    /* Remove o flex-grow para que a caixa não se expanda */
+    width: 200px; /* Define uma largura fixa para a caixa de pesquisa */
+    margin-right: 10px; /* Adiciona margem direita para separar da seleção */
+  }
+  
+  /* Estilos para o dropdown de seleção */
+  .pesquisa-container select {
+    padding: 8px;
+    border: 1px solid #d9534f;
+    border-radius: 4px;
+    margin-right: 10px; /* Adiciona margem direita para separar do botão */
+  }
+  
+  /* Estilos para o botão de filtrar */
+  .pesquisa-container button {
+    padding: 8px 12px;
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .pesquisa-container button:hover {
+    background-color: #c9302c;
+  }

@@ -8,6 +8,9 @@ function CadastroLivro() {
   const [titulo, setTitulo] = useState('');
   const [autor, setAutor] = useState('');
   const [numeroTombo, setNumeroTombo] = useState('');
+  const [editora, setEditora] = useState('');
+  const [genero, setGenero] = useState('');
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -17,12 +20,17 @@ function CadastroLivro() {
         titulo: titulo,
         autor: autor,
         numeroTombo: numeroTombo,
+        editora: editora,
+        genero: genero,
         emprestado: false 
       });
 
       setTitulo('');
       setAutor('');
       setNumeroTombo('');
+      setEditora('');
+      setGenero('');
+
 
       alert('Livro cadastrado com sucesso!');
     } catch (error) {
@@ -51,6 +59,22 @@ function CadastroLivro() {
           id="autor"
           value={autor}
           onChange={(e) => setAutor(e.target.value)}
+          required
+        />
+        <label htmlFor="editora">Editora:</label>
+        <input
+          type="text"
+          id="editora"
+          value={editora}
+          onChange={(e) => setEditora(e.target.value)}
+          required
+        />
+        <label htmlFor="genero">Gênero:</label>
+        <input
+          type="text"
+          id="genero"
+          value={genero}
+          onChange={(e) => setGenero(e.target.value)}
           required
         />
         <label htmlFor="numeroTombo">Número tombo:</label>

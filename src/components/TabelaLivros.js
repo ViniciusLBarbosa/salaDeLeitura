@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { collection, getDocs, deleteDoc, doc, updateDoc, arrayRemove, getDoc } from 'firebase/firestore';
+import { collection, getDocs, deleteDoc, doc, updateDoc, arrayRemove, getDoc, query, where } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import '../styles.css';
-import './tabela.css'
+import './tabela.css';
+import './pesquisa.css';
 
 function TabelaLivros() {
   const [livros, setLivros] = useState([]);
+  const [livrosFiltrados, setLivrosFiltrados] = useState([]);
   const [ordenacao, setOrdenacao] = useState({ campo: 'titulo', direcao: 'asc' });
   const [alunos, setAlunos] = useState([]);
+  const [filtro, setFiltro] = useState({ campo: 'titulo', valor: '' });
 
   const deletarLivro = async (id) => {
     if (window.confirm('Tem certeza que deseja deletar esse livro?')) {
@@ -24,29 +27,35 @@ function TabelaLivros() {
     if (window.confirm('Tem certeza que deseja devolver esse livro?')) {
       try {
         const livroRef = doc(db, 'livros', id);
-        const livroDoc = await getDoc(livroRef); // Busca o documento do livro
+        const livroDoc = await getDoc(livroRef);
 
-        // Verifica se o documento do livro existe
         if (livroDoc.exists()) {
-          const alunoId = livroDoc.data().alunoEmprestado; // Obtém o ID do aluno
-          console.log("ID do aluno:", alunoId);
+          const alunoId = livroDoc.data().alunoEmprestado;
 
-          // Atualiza o documento do livro
-          await updateDoc(livroRef, { emprestado: false, alunoEmprestado: '', serie: '' });
+          const emprestimosRef = collection(db, 'emprestimos');
+          const q = query(emprestimosRef, where('livroId', '==', id), where('alunoId', '==', alunoId));
+          const querySnapshot = await getDocs(q);
 
-          // Remove o livro da lista de livrosEmprestados do aluno
-          const alunoRef = doc(db, 'alunos', alunoId);
-          await updateDoc(alunoRef, { 
-            livrosEmprestados: arrayRemove(id) 
-          });
+          if (!querySnapshot.empty) {
+            const emprestimoId = querySnapshot.docs[0].id;
+            const emprestimoRef = doc(db, 'emprestimos', emprestimoId);
 
-          setLivros(livros.map(livro =>
-            livro.id === id ? { ...livro, emprestado: false, alunoEmprestado: '', serie: '' } : livro
-          ));
+            await deleteDoc(emprestimoRef);
+
+            await updateDoc(livroRef, { emprestado: false, alunoEmprestado: '', serie: '' });
+
+            const alunoRef = doc(db, 'alunos', alunoId);
+            await updateDoc(alunoRef, { livrosEmprestados: arrayRemove(id) });
+
+            setLivros(livros.map(livro =>
+              livro.id === id ? { ...livro, emprestado: false, alunoEmprestado: '', serie: '' } : livro
+            ));
+          } else {
+            console.error('Empréstimo não encontrado.');
+          }
         } else {
           console.error('Documento do livro não encontrado.');
         }
-
       } catch (error) {
         console.error('Erro ao devolver livro:', error);
       }
@@ -64,8 +73,8 @@ function TabelaLivros() {
         console.error('Erro ao buscar livros:', error);
       }
     };
-   
-    const fetchAlunos = async () => { // Função para buscar alunos
+    
+    const fetchAlunos = async () => {
       try {
         const alunosCollection = collection(db, 'alunos');
         const alunosSnapshot = await getDocs(alunosCollection);
@@ -77,8 +86,36 @@ function TabelaLivros() {
     };
 
     fetchLivros();
-    fetchAlunos(); // Chama a função para buscar alunos
+    fetchAlunos();
   }, []);
+
+  useEffect(() => {
+    setLivrosFiltrados(livros);
+  }, [livros, filtro]);
+
+  const handleChangeFiltro = (e) => {
+    setFiltro({ ...filtro, valor: e.target.value });
+  };
+
+  const handleSelectFiltro = (e) => {
+    setFiltro({ ...filtro, campo: e.target.value, valor: '' });
+  };
+
+  const filtrarLivros = () => {
+    const { campo, valor } = filtro;
+    const valorMinusculo = valor.toLowerCase();
+
+    const livrosFiltrados = livros.filter(livro => {
+      if (campo === 'aluno') {
+        const aluno = alunos.find(aluno => aluno.id === livro.alunoEmprestado);
+        return aluno?.nome.toLowerCase().includes(valorMinusculo);
+      } else {
+        return livro[campo].toLowerCase().includes(valorMinusculo);
+      }
+    });
+
+    setLivrosFiltrados(livrosFiltrados);
+  };
 
   const ordenarLivros = (campo) => {
     setOrdenacao(prevOrdenacao => ({
@@ -98,41 +135,65 @@ function TabelaLivros() {
   };
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th onClick={() => ordenarLivros('titulo')}>Título</th>
-          <th onClick={() => ordenarLivros('autor')}>Autor</th>
-          <th onClick={() => ordenarLivros('numeroTombo')}>Número Tombo</th>
-          <th>Emprestado</th>
-          <th>Aluno</th>
-          <th>Ano/Série</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        {livros.map((livro) => (
-          <tr key={livro.id}>
-            <td>{livro.titulo}</td>
-            <td>{livro.autor}</td>
-            <td>{livro.numeroTombo}</td>
-            <td>{livro.emprestado ? 'Sim' : 'Não'}</td>
-            <td>
-              {livro.emprestado // Exibe o nome do aluno, se encontrado
-                ? alunos.find(aluno => aluno.id === livro.alunoEmprestado)?.nome || "Aluno não encontrado" 
-                : ""}
-            </td>
-            <td>{livro.serie}</td>
-            <td>
-              {livro.emprestado && (
-                <button className='botoes' onClick={() => devolverLivro(livro.id)}>Devolver</button>
-              )}
-              <button className='botoes' onClick={() => deletarLivro(livro.id)}>Remover</button>
-            </td>
+    <div>
+      <div className='pesquisa-container'> 
+        <input
+          type="text"
+          placeholder="Pesquisar..."
+          value={filtro.valor}
+          onChange={handleChangeFiltro}
+        />
+        <select value={filtro.campo} onChange={handleSelectFiltro}>
+          <option value="titulo">Título</option>
+          <option value="autor">Autor</option>
+          <option value="genero">Gênero</option>
+          <option value="editora">Editora</option>
+          <option value="numeroTombo">Número Tombo</option>
+          <option value="aluno">Aluno</option>
+        </select>
+        <button onClick={filtrarLivros}>Pesquisar</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th onClick={() => ordenarLivros('titulo')}>Título</th>
+            <th onClick={() => ordenarLivros('autor')}>Autor</th>
+            <th>Gênero</th>
+            <th>Editora</th>
+            <th onClick={() => ordenarLivros('numeroTombo')}>Número Tombo</th>
+            <th>Emprestado</th>
+            <th>Aluno</th>
+            <th>Ano/Série</th>
+            <th>Ações</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {livrosFiltrados.map((livro) => (
+            <tr key={livro.id}>
+              <td>{livro.titulo}</td>
+              <td>{livro.autor}</td>
+              <td>{livro.genero}</td>
+              <td>{livro.editora}</td>
+              <td>{livro.numeroTombo}</td>
+              <td>{livro.emprestado ? 'Sim' : 'Não'}</td>
+              <td>
+                {livro.emprestado
+                  ? alunos.find(aluno => aluno.id === livro.alunoEmprestado)?.nome || "Aluno não encontrado" 
+                  : ""}
+              </td>
+              <td>{livro.serie}</td>
+              <td>
+                {livro.emprestado && (
+                  <button className='botoes' onClick={() => devolverLivro(livro.id)}>Devolver</button>
+                )}
+                <button className='botoes' onClick={() => deletarLivro(livro.id)}>Remover</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

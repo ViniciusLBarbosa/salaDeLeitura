@@ -84,11 +84,12 @@ function EmprestimoLivro() {
 
         const dataEmprestimo = new Date();
         let dataDevolucao = new Date();
-        dataDevolucao.setDate(dataEmprestimo.getDate() + 7);
+        dataDevolucao.setDate(dataEmprestimo.getDate() + 14);
 
         const emprestimosCollection = collection(db, 'emprestimos');
         await addDoc(emprestimosCollection, {
           livroId: livroId,
+          status: 'emprestado',
           livroIdNumero: numeroTombo,
           alunoId: alunoId,
           dataEmprestimo: dataEmprestimo,
