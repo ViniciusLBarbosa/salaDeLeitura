@@ -87,9 +87,6 @@ function Home() {
       const dia = dataObj.getDate();
       const mes = dataObj.getMonth() + 1; 
       const ano = dataObj.getFullYear();
-      const horas = dataObj.getHours();
-      const minutos = dataObj.getMinutes();
-      const segundos = dataObj.getSeconds();
 
       return `${dia}/${mes}/${ano} `;
     }
