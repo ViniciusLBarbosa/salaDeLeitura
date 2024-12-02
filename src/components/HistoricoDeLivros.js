@@ -10,17 +10,6 @@ function HistoricoDeLivros() {
   const [livros, setLivros] = useState([]);
   const [ordenacao, setOrdenacao] = useState({ campo: 'nome', direcao: 'asc' }); // Campo inicial: 'nome'
 
-  const deletarAluno = async (id) => {
-    if (window.confirm('Tem certeza que deseja remover esse aluno?')) {
-      try {
-        await deleteDoc(doc(db, 'alunos', id));
-        setAluno(aluno.filter(aluno => aluno.id !== id));
-      } catch (error) {
-        console.error('Erro ao deletar aluno:', error);
-      }
-    }
-  };
-
   useEffect(() => {
     const fetchAlunos = async () => {
       try {
