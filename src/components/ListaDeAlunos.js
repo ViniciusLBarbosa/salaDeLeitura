@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../config/firebase';
-import '../styles.css';
-import './tabela.css'
-
+import  '../styles.css';
+import './tabela.css';
 
 function ListaDeAlunos() {
   const [aluno, setAluno] = useState([]);
   const [livros, setLivros] = useState([]);
-  const [ordenacao, setOrdenacao] = useState({ campo: 'nome', direcao: 'asc' }); // Campo inicial: 'nome'
+  const [alunosOriginais, setAlunosOriginais] = useState([]);
+  const [ordenacao, setOrdenacao] = useState({ campo: 'nome', direcao: 'asc' });
+  const [filtro, setFiltro] = useState({ campo: 'nome', valor: '' });
 
   const deletarAluno = async (id) => {
     if (window.confirm('Tem certeza que deseja remover esse aluno?')) {
       try {
         await deleteDoc(doc(db, 'alunos', id));
         setAluno(aluno.filter(aluno => aluno.id !== id));
+        setAlunosOriginais(alunosOriginais.filter(aluno => aluno.id !== id));
       } catch (error) {
         console.error('Erro ao deletar aluno:', error);
       }
@@ -28,12 +30,13 @@ function ListaDeAlunos() {
         const alunosSnapshot = await getDocs(alunosCollection);
         const alunosList = alunosSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         setAluno(alunosList);
+        setAlunosOriginais(alunosList);
       } catch (error) {
         console.error('Erro ao buscar aluno:', error);
       }
     };
-    
-    const fetchLivros = async () => { // Função para buscar livros
+
+    const fetchLivros = async () => {
       try {
         const livrosCollection = collection(db, 'livros');
         const livrosSnapshot = await getDocs(livrosCollection);
@@ -45,7 +48,7 @@ function ListaDeAlunos() {
     };
 
     fetchAlunos();
-    fetchLivros(); // Chama a função para buscar livros
+    fetchLivros();
   }, []);
 
   const ordenarAlunos = (campo) => {
@@ -55,9 +58,9 @@ function ListaDeAlunos() {
     }));
 
     setAluno(prevAluno => [...prevAluno].sort((a, b) => {
-      if (campo === 'serie') { // Ordenação numérica para 'serie'
+      if (campo === 'serie') {
         return (a[campo] - b[campo]) * (ordenacao.direcao === 'asc' ? 1 : -1);
-      } else { 
+      } else {
         const valorA = a[campo].toLowerCase();
         const valorB = b[campo].toLowerCase();
         return valorA.localeCompare(valorB) * (ordenacao.direcao === 'asc' ? 1 : -1);
@@ -65,37 +68,70 @@ function ListaDeAlunos() {
     }));
   };
 
+  const filtrarAlunos = () => {
+    const { campo, valor } = filtro;
+    const valorMinusculo = valor.toLowerCase();
+
+    const alunosFiltrados = alunosOriginais.filter(aluno => {
+      if (campo === 'livrosEmprestados') {
+        const livrosDoAluno = livros.filter(livro => livro.alunoEmprestado === aluno.id);
+        return livrosDoAluno.some(livro => livro.titulo.toLowerCase().includes(valorMinusculo));
+      } else {
+        return aluno[campo].toString().toLowerCase().includes(valorMinusculo);
+      }
+    });
+
+    setAluno(alunosFiltrados);
+  };
+
   return (
-    <table>
-      <thead>
-        <tr>
-          <th onClick={() => ordenarAlunos('nome')}>Aluno</th> {/* Ordenar por 'nome' */}
-          <th onClick={() => ordenarAlunos('serie')}>Ano/Série</th> {/* Ordenar por 'serie' */}
-          <th>Livros Emprestados</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        {aluno.map((aluno) => (
-          <tr key={aluno.id}>
-            <td>{aluno.nome}</td> {/* Exibir 'nome' */}
-            <td>{aluno.serie}</td> {/* Exibir 'serie' */}
-            <td>
-              <ul> {/* Lista de livros emprestados */}
-                {livros
-                  .filter(livro => livro.alunoEmprestado === aluno.id)
-                  .map(livro => (
-                    <li key={livro.id}>{livro.titulo}</li>
-                  ))}
-              </ul>
-            </td>
-            <td>
-              <button className='botoes' onClick={() => deletarAluno(aluno.id)}>Remover Aluno</button>
-            </td>
+    <div>
+      <div className='pesquisa-container'>
+        <input
+          type="text"
+          placeholder="Pesquisar..."
+          value={filtro.valor}
+          onChange={(e) => setFiltro({ ...filtro, valor: e.target.value })}
+        />
+        <select value={filtro.campo} onChange={(e) => setFiltro({ ...filtro, campo: e.target.value })}>
+          <option value="nome">Aluno</option>
+          <option value="serie">Série</option>
+          <option value="livrosEmprestados">Livros Emprestados</option>
+        </select>
+        <button onClick={filtrarAlunos}>Pesquisar</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th onClick={() => ordenarAlunos('nome')}>Aluno</th>
+            <th onClick={() => ordenarAlunos('serie')}>Ano/Série</th>
+            <th>Livros Emprestados</th>
+            <th>Ações</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {aluno.map((aluno) => (
+            <tr key={aluno.id}>
+              <td>{aluno.nome}</td>
+              <td>{aluno.serie}</td>
+              <td>
+                <ul>
+                  {livros
+                    .filter(livro => livro.alunoEmprestado === aluno.id)
+                    .map(livro => (
+                      <li key={livro.id}>{livro.titulo}</li>
+                    ))}
+                </ul>
+              </td>
+              <td>
+                <button className='botoes' onClick={() => deletarAluno(aluno.id)}>Remover Aluno</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

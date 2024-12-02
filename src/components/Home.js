@@ -104,6 +104,7 @@ function Home() {
             <tr>
               <th>Título</th>
               <th>Aluno</th>
+              <th>Série</th>
               <th>Data de Devolução</th>
             </tr>
           </thead>
@@ -112,6 +113,7 @@ function Home() {
               <tr key={emprestimo.id}>
               <td>{emprestimo.livro ? emprestimo.livro.titulo : 'Livro não encontrado'}</td> 
               <td>{emprestimo.aluno ? emprestimo.aluno.nome : 'Aluno não encontrado'}</td>
+              <td>{emprestimo.aluno ? emprestimo.aluno.serie : 'Aluno não encontrado'}</td>
               <td>{formatarData(emprestimo.dataDevolucao)}</td>
               </tr>
             ))}
@@ -124,6 +126,7 @@ function Home() {
             <tr>
               <th>Título</th>
               <th>Aluno</th>
+              <th>Série</th>
               <th>Data de Empréstimo</th>
             </tr>
           </thead>
@@ -132,6 +135,7 @@ function Home() {
               <tr key={emprestimo.id}>
               <td>{emprestimo.livro ? emprestimo.livro.titulo : 'Livro não encontrado'}</td> 
               <td>{emprestimo.aluno ? emprestimo.aluno.nome : 'Aluno não encontrado'}</td>
+              <td>{emprestimo.aluno ? emprestimo.aluno.serie : 'Aluno não encontrado'}</td>
               <td>{formatarData(emprestimo.dataEmprestimo)}</td> 
               </tr>
             ))}

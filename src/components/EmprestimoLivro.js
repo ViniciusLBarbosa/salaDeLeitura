@@ -73,12 +73,10 @@ function EmprestimoLivro() {
       const livroDoc = await getDoc(livroRef);
 
       if (livroDoc.exists()) {
-        console.log("Livro emprestado:", livroDoc.data().emprestado);
         if (livroDoc.data().emprestado) {
           alert('Este livro já está emprestado.');
           return true;
-        }
-        else{
+        } else {
           alert('Livro emprestado com sucesso.');
         }
 
@@ -141,31 +139,19 @@ function EmprestimoLivro() {
         return;
       }
 
-      const aluno = alunos.find(a => a.nome === nomeDoAluno);
+      const aluno = alunos.find(a => a.nome === nomeDoAluno && a.serie === serieDoAluno);
 
       if (aluno) {
         await registrarEmprestimo(livroId, aluno.id);
       } else {
-        try {
-          const novoAlunoRef = await addDoc(collection(db, 'alunos'), {
-            nome: nomeDoAluno,
-            serie: serieDoAluno,
-            livrosEmprestados: []
-          });
-          await registrarEmprestimo(livroId, novoAlunoRef.id);
-
-        } catch (error) {
-          console.error('Erro ao cadastrar aluno:', error);
-          alert('Erro ao cadastrar aluno.');
-          return;
-        }
+        alert('Aluno não encontrado. Cadastre o aluno primeiro.');
+        return;
       }
 
       setNomeDoAluno('');
       setNomeDoLivro('');
       setNumeroTombo('');
       setSerieDoAluno('');
-
 
       buscarAlunos();
     } catch (error) {
@@ -175,12 +161,16 @@ function EmprestimoLivro() {
   };
 
   const handleAlunoChange = (event) => {
-    const alunoSelecionado = alunos.find(aluno => aluno.nome === event.target.value);
+    const alunoSelecionado = alunos.find(aluno => 
+      `${aluno.nome}, ${aluno.serie}` === event.target.value
+    );
+
     if (alunoSelecionado) {
       setNomeDoAluno(alunoSelecionado.nome);
       setSerieDoAluno(alunoSelecionado.serie);
     } else {
-      setNomeDoAluno(event.target.value);
+      const [nome] = event.target.value.split(', ');
+      setNomeDoAluno(nome);
       setSerieDoAluno('');
     }
   };
