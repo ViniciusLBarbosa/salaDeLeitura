@@ -20,6 +20,9 @@ function Layout({ children }) { // Recebe children como prop
               <Link to="/lista">Lista de Alunos</Link>
             </li>
             <li>
+              <Link to="/historico">Historico de Livros</Link>
+            </li>
+            <li>
               <Link to="/cadastro">Cadastro de Livros</Link>
             </li>
             <li>

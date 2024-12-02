@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import ListaDeAluno from './pages/Lista';
 import PrivateRoute from './components/PrivateRoute';
 import { AuthProvider } from './components/AuthContext';
+import HistoricoDeLivros from './pages/Historico';
 
 function App() {
   return (
@@ -35,6 +36,11 @@ function App() {
           <Route path="/lista" element={
             <PrivateRoute>
               <Layout><ListaDeAluno /></Layout>
+            </PrivateRoute>
+          } />
+          <Route path="/historico" element={
+            <PrivateRoute>
+              <Layout><HistoricoDeLivros /></Layout>
             </PrivateRoute>
           } />
           <Route path="/cadastro" element={

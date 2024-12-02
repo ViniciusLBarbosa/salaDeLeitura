@@ -104,7 +104,8 @@ function EmprestimoLivro() {
 
         const alunoRef = doc(db, 'alunos', alunoId);
         await updateDoc(alunoRef, {
-          livrosEmprestados: arrayUnion(livroId)
+          livrosEmprestados: arrayUnion(livroId),
+          historicoDeLivros: arrayUnion(livroId)
         });
 
       } else {
@@ -198,7 +199,7 @@ function EmprestimoLivro() {
         />
         <datalist id="alunos-list">
           {alunos.map(aluno => (
-            <option key={aluno.id} value={aluno.nome} />
+            <option key={aluno.id} value={`${aluno.nome}, ${aluno.serie}`} />
           ))}
         </datalist>
 
